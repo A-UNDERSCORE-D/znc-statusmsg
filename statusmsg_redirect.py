@@ -31,7 +31,7 @@ class statusmsg_redirect(znc.Module):
 
     def OnShutdown(self):
         self.save()
-        return super().OnShutdown()
+        return znc.CONTINUE
 
     def OnModCommand(self, sCommand: str):
         command = sCommand.strip().split(' ')[0].lower()
@@ -86,7 +86,7 @@ class statusmsg_redirect(znc.Module):
         else:
             self.PutModule('Unknown command {!r}. Try help'.format(sCommand))
 
-        return super().OnModCommand(sCommand)
+        return znc.CONTINUE
 
     def handle_add_del(self, cmd: str, name: str):
         if cmd == 'addidentifier':
@@ -187,7 +187,7 @@ class statusmsg_redirect(znc.Module):
 
             msg.SetParam(1, msg.GetParam(1)[:-diff])
 
-        return super().OnSendToClientMessage(msg)
+        return znc.CONTINUE
 
     if TYPE_CHECKING:
         def PutModule(self, msg: Union[str, znc.CTable]) -> None: ...
