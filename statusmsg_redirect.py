@@ -113,7 +113,7 @@ class statusmsg_redirect(znc.Module):
         help_table.SetCell('Description', 'This output')
 
         help_table.AddRow()
-        help_table.SetCell('Command', 'setformat <format>')
+        help_table.SetCell('Command', 'SetFormat <format>')
         help_table.SetCell(
             'Description', 'Sets the format to modify messages with for specified clients. defaults to {!r}'.format(
                 DEFAULT_FORMAT
