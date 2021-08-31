@@ -89,6 +89,7 @@ class statusmsg_redirect(znc.Module):
     def handle_add_del(self, cmd: str, name: str):
         if cmd == 'addidentifier':
             self.identifiers.append(name)
+            self.save()
             self.PutModule('Added {!r} to identifiers'.format(name))
 
         elif cmd == 'delidentifier':
@@ -97,6 +98,7 @@ class statusmsg_redirect(znc.Module):
                 return
 
             self.identifiers.remove(name)
+            self.save()
             self.PutModule('Removed {!r} from identifiers'.format(name))
 
     def send_help(self):
