@@ -111,7 +111,7 @@ class statusmsg_redirect(znc.Module):
         help_table.SetCell('Description', 'This output')
 
         help_table.AddRow()
-        help_table.SetCell('Command', 'setformat')
+        help_table.SetCell('Command', 'setformat <format>')
         help_table.SetCell(
             'Description', 'Sets the format to modify messages with for specified clients. defaults to {!r}'.format(
                 DEFAULT_FORMAT
@@ -123,13 +123,20 @@ class statusmsg_redirect(znc.Module):
         help_table.SetCell('Description', 'Gets the format to modify messages with for specified clients')
 
         help_table.AddRow()
-        help_table.SetCell('Command', 'addidentifier')
-        help_table.SetCell('Description', 'Adds a client identifier to the list of identifiers to modify messages for')
+        help_table.SetCell('Command', 'addidentifier [identifier]')
+        help_table.SetCell(
+            'Description',
+            'Adds a client identifier to the list of identifiers to modify messages for.'
+            'If an identifier is not supplied, it uses the current client\'s identifier'
+        )
 
         help_table.AddRow()
-        help_table.SetCell('Command', 'delidentifier')
+        help_table.SetCell('Command', 'delidentifier [identifier]')
         help_table.SetCell(
-            'Description', 'Removes a client identifier from the list of identifiers to modify messages for')
+            'Description',
+            'Removes a client identifier from the list of identifiers to modify messages for.'
+            'If an identifier is not supplied, it uses the current client\'s identifier'
+        )
 
         help_table.AddRow()
         help_table.SetCell('Command', 'listidentifiers')
