@@ -140,7 +140,8 @@ class statusmsg_redirect(znc.Module):
         self.PutModule(help_table)
 
     def OnSendToClientMessage(self, msg: znc.CMessage):
-        if not msg.GetType() == msg.Type_Text:
+        msg_type = msg.GetType()
+        if not (msg_type == msg.Type_Text or msg_type == msg.Type_Notice):
             return
 
         client = self.GetClient()
