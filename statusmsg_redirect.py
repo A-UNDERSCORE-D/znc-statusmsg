@@ -62,7 +62,7 @@ class statusmsg_redirect(znc.Module):
 
         elif command.startswith('setformat'):
             split = sCommand.split(' ', maxsplit=1)
-            if len(sCommand) < 2:
+            if len(split) < 2:
                 self.PutModule('setformat requires an argument')
 
             else:
