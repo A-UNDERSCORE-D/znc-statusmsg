@@ -34,11 +34,8 @@ class statusmsg_redirect(znc.Module):
         return super().OnShutdown()
 
     def OnModCommand(self, sCommand: str):
-        sCommand = sCommand.strip()
-        if sCommand == 'save':
-            self.save()
-
-        if sCommand == 'listidentifiers':
+        command = sCommand.strip().split(' ')[0].lower()
+        if command == 'listidentifiers':
             if len(self.identifiers) == 0:
                 self.PutModule('No set identifiers, use addidentifier to add some')
 
@@ -50,15 +47,20 @@ class statusmsg_redirect(znc.Module):
 
             self.PutModule(table)
 
-        elif sCommand.startswith('addidentifier') or sCommand.startswith('delidentifier'):
+        elif command.startswith('addidentifier') or command.startswith('delidentifier'):
             split = sCommand.split(' ')
+            if len(split) == 1:
+                c = self.GetClient()
+                if c is not None and c.GetIdentifier() != '':
+                    split.append(c.GetIdentifier())
+
             if len(split) == 2:
-                self.handle_add_del(split[0], split[1])
+                self.handle_add_del(command, split[1])
 
             else:
                 self.PutModule("{cmd} requires an argument".format(cmd=split[0]))
 
-        elif sCommand.startswith('setformat'):
+        elif command.startswith('setformat'):
             split = sCommand.split(' ', maxsplit=1)
             if len(sCommand) < 2:
                 self.PutModule('setformat requires an argument')
@@ -75,7 +77,7 @@ class statusmsg_redirect(znc.Module):
                     self.save()
                     self.PutModule('set {!r} as the in-use format'.format(self.format))
 
-        elif sCommand == 'getformat':
+        elif command == 'getformat':
             self.PutModule('{!r} is the currently in-use format'.format(self.format))
 
         elif sCommand == 'help':
@@ -119,11 +121,11 @@ class statusmsg_redirect(znc.Module):
         )
 
         help_table.AddRow()
-        help_table.SetCell('Command', 'getformat')
+        help_table.SetCell('Command', 'GetFormat')
         help_table.SetCell('Description', 'Gets the format to modify messages with for specified clients')
 
         help_table.AddRow()
-        help_table.SetCell('Command', 'addidentifier [identifier]')
+        help_table.SetCell('Command', 'AddIdentifier [identifier]')
         help_table.SetCell(
             'Description',
             'Adds a client identifier to the list of identifiers to modify messages for.'
@@ -131,7 +133,7 @@ class statusmsg_redirect(znc.Module):
         )
 
         help_table.AddRow()
-        help_table.SetCell('Command', 'delidentifier [identifier]')
+        help_table.SetCell('Command', 'DelIdentifier [identifier]')
         help_table.SetCell(
             'Description',
             'Removes a client identifier from the list of identifiers to modify messages for.'
@@ -139,12 +141,8 @@ class statusmsg_redirect(znc.Module):
         )
 
         help_table.AddRow()
-        help_table.SetCell('Command', 'listidentifiers')
+        help_table.SetCell('Command', 'ListIdentifiers')
         help_table.SetCell('Description', 'Lists the currently set identifiers')
-
-        help_table.AddRow()
-        help_table.SetCell('Command', 'save')
-        help_table.SetCell('Description', 'Saves all data (should not be needed)')
 
         self.PutModule(help_table)
 
