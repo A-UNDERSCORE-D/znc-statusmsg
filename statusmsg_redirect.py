@@ -141,7 +141,7 @@ class statusmsg_redirect(znc.Module):
 
     def OnSendToClientMessage(self, msg: znc.CMessage):
         msg_type = msg.GetType()
-        if not (msg_type == msg.Type_Text or msg_type == msg.Type_Notice):
+        if not (msg_type == msg.Type_Text or msg_type == msg.Type_Notice or msg_type == msg.Type_Action):
             return
 
         client = self.GetClient()
@@ -163,12 +163,21 @@ class statusmsg_redirect(znc.Module):
 
         # Okay, STATUSMSG. Lets rewrite history shall we?
         msg.SetParam(0, msg.GetChan().GetName())
-        msg.SetParam(1, self.format.format(prefix=target[0], msg=msg.GetParam(1)))
+        to_set = self.format.format(prefix=target[0], msg=msg.GetParam(1))
+        if msg_type == msg.Type_Action:
+            to_set = '\x01ACTION ' + to_set.replace('\x01ACTION ', '')
+
+        msg.SetParam(1, to_set)
         msg_len = len(msg.ToString())
 
         if msg_len > 510:
             # we need to trim this, to be sure
             diff = msg_len - 510
+            to_set = msg.GetParam(1)[:-diff]
+            if msg_type == msg.Type_Action:
+                # we stripped off a trailing \x01, put it back
+                to_set = to_set[:-1] + '\x01'
+
             msg.SetParam(1, msg.GetParam(1)[:-diff])
 
         return super().OnSendToClientMessage(msg)
