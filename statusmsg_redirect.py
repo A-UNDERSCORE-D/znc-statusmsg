@@ -80,7 +80,7 @@ class statusmsg_redirect(znc.Module):
         elif command == 'getformat':
             self.PutModule('{!r} is the currently in-use format'.format(self.format))
 
-        elif sCommand == 'help':
+        elif command == 'help':
             self.send_help()
 
         else:
